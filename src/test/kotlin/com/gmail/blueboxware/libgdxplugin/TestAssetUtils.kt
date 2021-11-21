@@ -45,18 +45,18 @@ class TestAssetUtils: LibGDXCodeInsightFixtureTestCase() {
     assertNotNull(atlasFile)
   }
 
-  fun testgetAssociatedAtlas() {
-    assertEquals(skinFile!!.getAssociatedAtlas(), atlasFile!!)
-  }
-
-  fun testgetAssociatedFiles() {
-    assertTrue(
-            skinFile!!
-                    .getAssociatedFiles()
-                    .map { it.name }
-                    .containsAll(listOf("somefile", "anotherfile", "ui.atlas"))
-    )
-  }
+//  fun testgetAssociatedAtlas() {
+//    assertEquals(skinFile!!.getAssociatedAtlas(), atlasFile!!)
+//  }
+//
+//  fun testgetAssociatedFiles() {
+//    assertTrue(
+//            skinFile!!
+//                    .getAssociatedFiles()
+//                    .map { it.name }
+//                    .containsAll(listOf("somefile", "anotherfile", "ui.atlas"))
+//    )
+//  }
 
   fun testReadImageNamesFromAtlas() {
     val imageNames = atlasFile!!.readImageNamesFromAtlas()

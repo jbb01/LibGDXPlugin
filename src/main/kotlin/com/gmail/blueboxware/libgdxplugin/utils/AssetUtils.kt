@@ -7,11 +7,14 @@ import com.gmail.blueboxware.libgdxplugin.filetypes.skin.psi.SkinFile
 import com.intellij.lang.Language
 import com.intellij.lang.properties.psi.impl.PropertiesFileImpl
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileVisitor
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.PsiFileImpl
+import org.jetbrains.kotlin.idea.util.sourceRoots
 import org.jetbrains.kotlin.psi.KtCallExpression
 import java.io.IOException
 
@@ -90,15 +93,23 @@ internal fun VirtualFile.getAssociatedFiles(): List<VirtualFile> {
   return result
 }
 
-internal fun VirtualFile.getAssociatedAtlas(): VirtualFile? {
-
+internal fun SkinFile.getAssociatedAtlas(): VirtualFile? {
   val dot = name.lastIndexOf('.')
-  if (dot > -1) {
-    val atlasName = name.substring(0, dot) + ".atlas"
-    return parent?.findChild(atlasName)
-  }
+  if (dot == -1) return null
 
-  return null
+  val atlasName = name.substring(0, dot) + ".atlas"
+  return virtualFile?.let { vf ->
+     vf.parent?.findChild(atlasName) ?: run {
+      val index = ProjectRootManager.getInstance(project).fileIndex
+      index.getSourceRootForFile(vf.parent)?.let { root ->
+        VfsUtilCore.getRelativePath(vf.parent, root)
+      }?.let { path ->
+        index.getModuleForFile(vf)?.sourceRoots?.mapNotNull { sourceRoot ->
+          sourceRoot.findFileByRelativePath(path)?.findChild(atlasName)
+        }?.firstOrNull()
+      }
+    }
+  }
 }
 
 internal fun VirtualFile.readImageNamesFromAtlas(): List<String> {

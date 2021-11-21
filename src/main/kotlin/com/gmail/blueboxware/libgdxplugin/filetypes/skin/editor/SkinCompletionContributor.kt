@@ -331,11 +331,9 @@ class SkinCompletionContributor: CompletionContributor() {
             || (objectType == TINTED_DRAWABLE_CLASS_NAME && property.name == PROPERTY_NAME_TINTED_DRAWABLE_NAME)
     ) {
 
-      skinFile.virtualFile?.let { virtualFile ->
-        virtualFile.getAssociatedAtlas()?.let { atlas ->
-          atlas.readImageNamesFromAtlas().forEach {
-            doAdd(LookupElementBuilder.create(it).withIcon(ICON_ATLAS), parameters, result)
-          }
+      skinFile.getAssociatedAtlas()?.let { atlas ->
+        atlas.readImageNamesFromAtlas().forEach {
+          doAdd(LookupElementBuilder.create(it).withIcon(ICON_ATLAS), parameters, result)
         }
       }
 

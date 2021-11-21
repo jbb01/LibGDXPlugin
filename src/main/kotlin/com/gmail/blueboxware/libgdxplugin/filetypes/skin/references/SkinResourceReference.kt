@@ -84,14 +84,12 @@ class SkinResourceReference(element: SkinStringLiteral): SkinReference<SkinStrin
         }
 
         if (valueType.canonicalText == DRAWABLE_CLASS_NAME || isTintedDrawableNameProperty) {
-          element.containingFile.virtualFile?.let { virtualFile ->
-            virtualFile.getAssociatedAtlas()?.let { atlasVirtualFile ->
-              (element.manager.findFile(atlasVirtualFile) as? AtlasFile)?.let { atlasFile ->
-                atlasFile.getPages().forEach { page ->
-                  page.regionList.forEach { region ->
-                    if (region.name == element.value) {
-                      result.add(PsiElementResolveResult(region))
-                    }
+          skinFile.getAssociatedAtlas()?.let { atlasVirtualFile ->
+            (element.manager.findFile(atlasVirtualFile) as? AtlasFile)?.let { atlasFile ->
+              atlasFile.getPages().forEach { page ->
+                page.regionList.forEach { region ->
+                  if (region.name == element.value) {
+                    result.add(PsiElementResolveResult(region))
                   }
                 }
               }
